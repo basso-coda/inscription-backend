@@ -50,14 +50,14 @@ const login = async (req, res) => {
                 errors: { EMAIL: "Ce compte est désactivé" }
             })
         }
-
+        
         // Vérifier si l'utilisateur a mal saisi son mot de passe
         if (!(await bcrypt.compare(MOT_DE_PASSE, utilisateur.MOT_DE_PASSE))) {
             return res.status(422).json({
                 httpStatus: 422,
                 message: "Erreur de validation des données",
                 data: null,
-                errors: { EMAIL: "Identifiants incorrects" }
+                errors: { MOT_DE_PASSE: "Mot de passe incorrect" }
             })
         }
 

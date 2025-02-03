@@ -1,7 +1,7 @@
 const yup = require('yup');
 const { ValidationError, Op } = require('sequelize');
 const Role = require('../../db/models/administrations/Role');
-const ProfilRole = require('../../db/models/administrations/Profil');
+const ProfilRole = require('../../db/models/administrations/Profil_role');
 const Profil = require('../../db/models/administrations/Profil');
 
 /**
@@ -134,6 +134,7 @@ const createRole = async (req, res) => {
         }));
 
         let data = await registerSchema.validate(req.body, { abortEarly: false, stripUnknown: true });
+// return console.log(data);
 
         const newData = await Role.create(data);
         const profilRoles = req.body?.PROFILS?.map(p => ({ PROFIL_ID: p.ID_PROFIL, ROLE_ID: newData.dataValues.ID_ROLE })) ?? [];
@@ -152,10 +153,11 @@ const createRole = async (req, res) => {
                 httpStatus: 422,
                 message: 'Erreur de validation des données',
                 data: null,
-                errors: ex.inner.reduce((acc, curr) => {
+                errors: error.inner.reduce((acc, curr) => {
                     if (curr.path) {
                         return { ...acc, [curr.path]: curr.errors[0] }
                     }
+                    return acc;
                 }, {}),
             })
         }
@@ -233,12 +235,12 @@ const updateRole = async (req, res) => {
         }
 
         const updateSchema = yup.lazy(() => yup.object({
-            DESC_ROLE: yup.string().optional(),
+            DESCRIPTION: yup.string().optional(),
             PROFILS: yup.array(),
         }));
 
         data = await updateSchema.validate(req.body, { abortEarly: false, stripUnknown: true });
-        await Role.update({ DESC_ROLE: data.DESC_ROLE }, { where: { ID_ROLE: req.params.ID_role } })
+        await Role.update({ DESCRIPTION: data.DESCRIPTION }, { where: { ID_ROLE: req.params.ID_role } })
 
         // on supprime tous si rien n'est selectionné
         if (data?.PROFILS?.length === 0) {

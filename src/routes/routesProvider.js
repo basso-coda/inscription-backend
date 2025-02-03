@@ -13,6 +13,14 @@ const collineRouter = require('./colline/colline_routes');
 const nationaliteRouter = require('./nationalite/nationalite_routes');
 const { strategy } = require('sharp');
 const authRouter = require('./auth_routes');
+const faculteRouter = require('./gestion_facultes/faculte_routes');
+const departementRouter = require('./gestion_facultes/departement_routes');
+const classeRouter = require('./gestion_facultes/classe_routes');
+const exigenceRouter = require('./gestion_facultes/exigence_routes');
+const exigenceFaculteRouter = require('./gestion_facultes/exigence_faculte_routes');
+const typeDocumentRouter = require('./gestion_document/type_document_routes');
+const typePaiementRouter = require('./gestion_paiement/type_paiement_routes');
+const motifRouter = require('./gestion_motifs/motif_routes');
 
 
 mainRouter.use(authRouter);
@@ -26,5 +34,22 @@ mainRouter.use(communeRouter)
 mainRouter.use(zoneRouter)
 mainRouter.use(collineRouter)
 mainRouter.use(nationaliteRouter)
+
+// GESTION DES FACULTES
+mainRouter.use(faculteRouter)
+mainRouter.use(departementRouter)
+mainRouter.use(classeRouter)
+mainRouter.use(exigenceRouter)
+mainRouter.use(exigenceFaculteRouter)
+
+//GESTION DES PAIEMENTS
+mainRouter.use(typePaiementRouter)
+
+// GESTION DES DOCUMENTS
+mainRouter.use(typeDocumentRouter)
+
+// GESTION DES MOTIFS
+mainRouter.use(motifRouter)
+
 
 module.exports = mainRouter;

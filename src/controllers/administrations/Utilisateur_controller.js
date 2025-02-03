@@ -188,7 +188,7 @@ const createUtilisateur = async (req, res) => {
         const randomPassword = passwordGenerator();
         const MOT_DE_PASSE = await bcrypt.hash(randomPassword, salt)
 
-        // stocker les fichiers dans la memoire et recupèrer le chemin
+        // stocker les fichiers dans la memoire et recuperer le chemin
         for (const name in files) {
             const uploadedFile = await Uploader.save(files[name], 'utilisateurs');
             files[name] = `${req.protocol}://${req.get("host")}/${uploadedFile?.fileInfo?.fileName}`
