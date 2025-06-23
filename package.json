@@ -4,7 +4,7 @@
   "description": "Souche pour les apis de backend",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "node server.js",
     "test": "cross-env NODE_ENV=test  jest --testTimeout=10000"
   },
   "author": "elam.igirubuntu@mediabox.bi",
