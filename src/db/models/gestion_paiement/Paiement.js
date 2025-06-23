@@ -29,9 +29,9 @@ const Paiement = sequelize.define('paiement', {
         allowNull: false,
     },
     DATE_PAIEMENT: {
-        type: DataTypes.DATE,
-        unique: true,
-        allowNull: false,
+        type: 'TIMESTAMP',
+        defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
+        allowNull: false
     },
     CANDIDATURE_ID: {
         type: DataTypes.INTEGER,

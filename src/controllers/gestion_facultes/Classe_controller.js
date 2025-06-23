@@ -1,7 +1,8 @@
 const yup = require('yup');
 const Classe = require('../../db/models/gestion_facultes/Classe')
 const Departement = require('../../db/models/gestion_facultes/Departement')
-const { ValidationError, Op } = require('sequelize')
+const { ValidationError, Op } = require('sequelize');
+const Faculte = require('../../db/models/gestion_facultes/Faculte');
 
 /**
  * Recupérer la liste des classes
@@ -33,7 +34,8 @@ const getClasses = async (req, res) => {
                     where: whereCondition,
                     include: {
                         model: Departement,
-                        as: 'departement'
+                        as: 'departement',
+                        include: [{ model: Faculte, as: 'faculte' }]
                     }
                 },
             );

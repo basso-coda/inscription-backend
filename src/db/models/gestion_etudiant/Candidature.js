@@ -1,5 +1,4 @@
 const { DataTypes } = require('sequelize');
-const TypePartenaire = require('../front_partenaire/TypePartenaire');
 const EtatCivil = require('../etat_civil/Etat_civil_model');
 const Sexe = require('../sexe/Sexe_model');
 const Province = require('../provinces/Province_model');
@@ -8,6 +7,10 @@ const Commune = require('../communes/Commune_model');
 // const Colline = require('../collines/Colline_model');
 const Utilisateur = require('../administrations/Utilisateur')
 const Classe = require('../gestion_facultes/Classe')
+const Nationalite = require('../nationalite/Nationalite');
+const Document = require('../gestion_document/Document');
+const PersonneContact = require('./PersonneContact');
+const MotifRejet = require('../gestion_motif/MotifRejet');
 const sequelize = require('../index').sequelize;
 
 const Candidature = sequelize.define('candidature', {
@@ -23,12 +26,12 @@ const Candidature = sequelize.define('candidature', {
     },
 
     ANNEE_ACADEMIQUE: {
-        type: DataTypes.TINYINT,
+        type: DataTypes.STRING,
         allowNull: true,
     },
 
     CLASSE_ID: {
-        type: DataTypes.TINYINT,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
 
@@ -58,7 +61,7 @@ const Candidature = sequelize.define('candidature', {
     },
 
     COMMUNE_DELIVRANCE: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
     },
 
@@ -102,7 +105,7 @@ const Candidature = sequelize.define('candidature', {
         allowNull: false
     },
     STATUT_CANDIDATURE: {
-        type: DataTypes.STRING,
+        type: DataTypes.TINYINT,
         allowNull: false
     },
     SECRETAIRE_ID: {
@@ -114,6 +117,12 @@ const Candidature = sequelize.define('candidature', {
         defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
         allowNull: false
     },
+    TERMS_ACCEPTED: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+    },
+
 
     CANDIDAT_ID: DataTypes.INTEGER,
     ANNEE_ACADEMIQUE: DataTypes.STRING,
@@ -123,7 +132,7 @@ const Candidature = sequelize.define('candidature', {
     DATE_NAISSANCE: DataTypes.DATE,
     NATIONALITE_ID: DataTypes.INTEGER,
     NUM_CARTE_IDENTITE: DataTypes.STRING,
-    COMMUNE_DELIVRANCE: DataTypes.INTEGER,
+    COMMUNE_DELIVRANCE: DataTypes.STRING,
     DATE_DELIVRANCE: DataTypes.DATE,
     SEXE_ID: DataTypes.TINYINT,
     ETAT_CIVIL_ID: DataTypes.TINYINT,
@@ -133,8 +142,10 @@ const Candidature = sequelize.define('candidature', {
     NOM_DERNIERE_ECOLE_FREQUENTEE: DataTypes.STRING,
     NOTE_DERNIERE_ECOLE_SECONDAIRE_FREQUENTEE: DataTypes.FLOAT,
     NOTE_EXAMEN_D_ETAT: DataTypes.FLOAT,
-    STATUT_CANDIDATURE: DataTypes.STRING,
+    STATUT_CANDIDATURE: DataTypes.TINYINT,
     SECRETAIRE_ID: DataTypes.INTEGER,
+    TERMS_ACCEPTED: DataTypes.BOOLEAN
+
 
 }, {
     timestamps: false,
@@ -146,10 +157,20 @@ Candidature.belongsTo(Sexe, {as: 'sexe', foreignKey:"SEXE_ID"})
 Candidature.belongsTo(EtatCivil, {as: 'etat_civil', foreignKey:"ETAT_CIVIL_ID"})
 Candidature.belongsTo(Utilisateur, {as: 'secretaire', foreignKey:"SECRETAIRE_ID"})
 Candidature.belongsTo(Utilisateur, {as: 'candidat', foreignKey: "CANDIDAT_ID"})
-// Candidature.belongsTo(Province, {as: 'provinces', foreignKey: "PROVINCE_ID"})
-Candidature.belongsTo(Commune, {as: 'communes', foreignKey: "COMMUNE_ID"})
 Candidature.belongsTo(Classe, { as: 'classe', foreignKey: "CLASSE_ID" })
-// Candidature.belongsTo(Zone, {as: 'zones', foreignKey: "ZONE_ID"})
-// Candidature.belongsTo(Colline, {as: 'collines', foreignKey: "COLLINE_ID"})
+Candidature.belongsTo(Nationalite, { as: 'nationalite', foreignKey: "NATIONALITE_ID" })
+
+Candidature.hasMany(Document, {
+    foreignKey: 'CANDIDATURE_ID',
+    as: 'documents'
+});
+Candidature.hasMany(PersonneContact, {
+    foreignKey: 'CANDIDATURE_ID',
+    as: 'personnes_contact'
+})
+Candidature.hasMany(MotifRejet, {
+    foreignKey: 'CANDIDATURE_ID',
+    as: 'motif_rejets'
+})
 
 module.exports = Candidature;

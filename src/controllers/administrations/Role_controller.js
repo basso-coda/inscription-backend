@@ -97,12 +97,12 @@ const getRoles = async (req, res) => {
             offset: parseInt(first),
             order: [[orderColumn, orderDirection]],
             where: { ...globalSearchWhereLike, },
-            include: [{
-                model: Profil,
-                where: { ...profilFilter },
-                as: 'ROLES',
-                attributes: []
-            }]
+            // include: [{
+            //     model: Profil,
+            //     where: { ...profilFilter },
+            //     as: 'ROLES',
+            //     attributes: []
+            // }]
         });
 
         res.json({

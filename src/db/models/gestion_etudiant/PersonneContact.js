@@ -6,7 +6,7 @@ const Candidature = require('./Candidature')
  * @author elam
  * @date 18/12/2024
  */
-const PersonneContact = sequelize.define('personne_contact', {
+const PersonneContact = sequelize.define('personnes_contact', {
     ID_PERSONNE_CONTACT: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -48,6 +48,6 @@ const PersonneContact = sequelize.define('personne_contact', {
     tableName:'personne_contact'
 })
 
-PersonneContact.belongsTo(Candidature, { as: 'candidature', foreignKey: 'CANDIDATURE_ID' })
+// PersonneContact.belongsTo(Candidature, { as: 'candidature', foreignKey: 'CANDIDATURE_ID' })
 
 module.exports = PersonneContact;

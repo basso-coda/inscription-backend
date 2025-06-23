@@ -11,7 +11,6 @@ const { ValidationError, Op } = require('sequelize')
 const getTypeDocuments = async (req, res) => {
     const {search} = req.query;
     try {
-
             // Recherche globale
         let globalSearchColumns = [];
 

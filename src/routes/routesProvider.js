@@ -21,12 +21,16 @@ const exigenceFaculteRouter = require('./gestion_facultes/exigence_faculte_route
 const typeDocumentRouter = require('./gestion_document/type_document_routes');
 const typePaiementRouter = require('./gestion_paiement/type_paiement_routes');
 const motifRouter = require('./gestion_motifs/motif_routes');
+const candidatureRouter = require('./gestion_candidature/candidature_routes');
+const dashboardRouter = require('./dashboard/dashboard_routes');
+const profilRoleRouter = require('./administrations/profil_role_routes');
 
 
 mainRouter.use(authRouter);
 mainRouter.use(utilisateursRoutes);
 mainRouter.use(profilsRouter)
 mainRouter.use(rolesRouter)
+mainRouter.use(profilRoleRouter)
 mainRouter.use(etat_civilsRouter)
 mainRouter.use(sexesRouter)
 mainRouter.use(provinceRouter)
@@ -50,6 +54,12 @@ mainRouter.use(typeDocumentRouter)
 
 // GESTION DES MOTIFS
 mainRouter.use(motifRouter)
+
+// GESTION DES ETUDIANTS
+mainRouter.use(candidatureRouter)
+
+// DASHBOARD
+mainRouter.use(dashboardRouter)
 
 
 module.exports = mainRouter;

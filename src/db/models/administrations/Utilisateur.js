@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const Profil = require('./Profil');
+const Sexe = require('../sexe/Sexe_model')
 const sequelize = require('../index').sequelize;
 
 const Utilisateur = sequelize.define('utilisateur', {
@@ -36,6 +37,7 @@ const Utilisateur = sequelize.define('utilisateur', {
     },
 
     PROFIL_ID: DataTypes.SMALLINT,
+    SEXE_ID: DataTypes.TINYINT,
 
     IS_ACTIVE: {
         type: DataTypes.TINYINT(1),
@@ -56,5 +58,6 @@ const Utilisateur = sequelize.define('utilisateur', {
 
 Utilisateur.belongsTo(Profil, { foreignKey: 'PROFIL_ID', as: 'profil' })
 Profil.hasMany(Utilisateur, { foreignKey: 'PROFIL_ID', as: 'utilisateurs' })
+Utilisateur.belongsTo(Sexe, { foreignKey: 'SEXE_ID', as: 'sexe' })
 
 module.exports = Utilisateur;

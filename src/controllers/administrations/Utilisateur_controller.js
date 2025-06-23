@@ -6,9 +6,11 @@ const Uploader = require('../../utils/Upload');
 const Utilisateur = require('../../db/models/administrations/Utilisateur');
 const Profil = require('../../db/models/administrations/Profil');
 const UtilisateurHistorique = require('../../db/models/administrations/Utilisateur_historique');
+const Sexe = require('../../db/models/sexe/Sexe_model')
 const passwordGenerator = require('../../utils/passwordGenerator');
 
 const emailSender = require('../../utils/emailSender');
+const Role = require('../../db/models/administrations/Role');
 
 yup.setLocale({
     mixed: {
@@ -39,6 +41,8 @@ const getUtilisateurs = async (req, res) => {
                     PRENOM: "PRENOM",
                     TELEPHONE: "TELEPHONE",
                     EMAIL: "EMAIL",
+                    PROFIL_ID: "PROFIL_ID",
+                    SEXE_ID: "SEXE_ID",
                     DATE_INSERTION: "DATE_INSERTION",
                 }
             },
@@ -91,8 +95,10 @@ const getUtilisateurs = async (req, res) => {
             "TELEPHONE",
             "EMAIL",
             "PROFIL_ID",
+            "SEXE_ID",
             "DATE_INSERTION",
-            "$profil.DESCRIPTION$"
+            "$profil.DESCRIPTION$",
+            "$sexe.SEXE_DESCRIPTION$"
         ]
 
         let globalSearchWhereLike = {}
@@ -121,7 +127,7 @@ const getUtilisateurs = async (req, res) => {
             offset: parseInt(first),
             order: [[orderColumn, orderDirection]],
             where: { ...globalSearchWhereLike, },
-            include: [{ model: Profil, as: 'profil' }]
+            include: [{ model: Profil, as: 'profil', include: [{ model: Role, as: 'ROLES', through: { attributes: [] } }], }, { model: Sexe, as: 'sexe' }]
         });
 
         res.json({
@@ -161,12 +167,13 @@ const createUtilisateur = async (req, res) => {
         PRENOM: yup.string().required(),
         USERNAME: yup.string().required().when({
             is: val => val.length > 0,
-            then: () => yup.string().matches(/^[0-9A-Za-z]{6,16}$/, 'Les caractères spéciaux ou les éspaces ne sont pas permis'),
+            then: () => yup.string().matches(/^[0-9A-Za-z]{6,16}$/, 'Les caractères spéciaux ou les éspaces ne sont pas permis, et la longueur doit être entre 6 et 16 caractères'),
         }),
         EMAIL: yup.string().email().required(),
         TELEPHONE: yup.string().required(),
 
         PROFIL_ID: yup.number().required(),
+        SEXE_ID: yup.number().required(),
 
         IMAGE: yup.mixed().test("fileSize", "Le fichier est volumineux", (value) => {
             if (!value?.size) return true // attachment is optional
@@ -193,7 +200,8 @@ const createUtilisateur = async (req, res) => {
             const uploadedFile = await Uploader.save(files[name], 'utilisateurs');
             files[name] = `${req.protocol}://${req.get("host")}/${uploadedFile?.fileInfo?.fileName}`
         }
-
+        // return console.log('Ivyo ngira mbike', data);
+        
         const newData = await Utilisateur.create({
             ...data,
             ...files,
@@ -267,33 +275,23 @@ const getUtilisateur = async (req, res) => {
         const { ID_utilisateur } = req.params
         const utilisateur = await Utilisateur.findByPk(ID_utilisateur, {
             attributes: { exclude: 'MOT_DE_PASSE' },
-            include: [{
-                model: Banque,
-                as: 'banque',
-                attributes: ['ID_BANQUE', 'NOM_BANQUE']
-            }, {
-                model: Nationalite,
-                as: 'nationalite',
-            }, {
-                model: EtatCivil,
-                as: 'etatCivil',
-                attributes: ['ID_ETAT_CIVIL', 'DESCRIPTION']
-            }, {
-                model: Sexe,
-                as: 'sexe',
-                attributes: ['SEXE_ID', 'SEXE_DESCRIPTION']
-            },
-            {
-                model: Profil,
-                as: 'profil',
-                attributes: ['ID_PROFIL', 'DESCRIPTION']
-            }
+            include: [ 
+                {
+                    model: Sexe,
+                    as: 'sexe',
+                    attributes: ['SEXE_ID', 'SEXE_DESCRIPTION']
+                },
+                {
+                    model: Profil,
+                    as: 'profil',
+                    include: [{ model: Role, as: 'ROLES', through: { attributes: [] } }],
+                }
             ]
         });
 
         if (!utilisateur) {
             return res.status(404).json({
-                httpStatus: 200,
+                httpStatus: 404,
                 message: 'Utilisateur non trouvé',
                 data: utilisateur
             });
@@ -351,6 +349,7 @@ const updateUtilisateur = async (req, res) => {
                 TELEPHONE: yup.string().optional(),
 
                 PROFIL_ID: yup.number().optional(),
+                SEXE_ID: yup.number().optional(),
 
                 IMAGE: yup.mixed().test("fileSize", "Le fichier est volumineux", (value) => {
                     if (!value?.size) return true // attachment is optional

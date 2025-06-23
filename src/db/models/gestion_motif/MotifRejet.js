@@ -28,6 +28,6 @@ const MotifRejet = sequelize.define('motif_rejet', {
 })
 
 MotifRejet.belongsTo(Motif, { as: 'motif', foreignKey: 'MOTIF_ID' })
-MotifRejet.belongsTo(Candidature, { as: 'candidature', foreignKey: 'CANDIDATURE_ID' })
+// MotifRejet.belongsTo(Candidature, { as: 'candidature', foreignKey: 'CANDIDATURE_ID' })
 
 module.exports = MotifRejet;

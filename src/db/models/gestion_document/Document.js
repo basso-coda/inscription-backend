@@ -8,7 +8,7 @@ const sequelize = require('../index').sequelize;
  * @author elam
  * @date 11/12/2024
  */
-const Document = sequelize.define('document', {
+const Document = sequelize.define('documents', {
     ID_DOCUMENT: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -16,7 +16,6 @@ const Document = sequelize.define('document', {
     },
     TYPE_DOCUMENT_ID: {
         type: DataTypes.INTEGER,
-        unique: true,
         allowNull: false,
     },
     PATH_DOCUMENT: {
@@ -25,7 +24,6 @@ const Document = sequelize.define('document', {
     },
     CANDIDATURE_ID: {
         type: DataTypes.INTEGER,
-        unique: true,
         allowNull: false,
     },
 }, {
@@ -35,6 +33,6 @@ const Document = sequelize.define('document', {
 })
 
 Document.belongsTo(TypeDocument, { as: 'type_document', foreignKey: "TYPE_DOCUMENT_ID" })
-Document.belongsTo(Candidature, { as: 'candidature', foreignKey: "CANDIDATURE_ID" })
+// Document.belongsTo(Candidature, { as: 'candidature', foreignKey: "CANDIDATURE_ID" })
 
 module.exports = Document;

@@ -56,14 +56,10 @@
         <tbody>
             <tr>
                 <td>
-                    <p class="hi">Cher/Chère, <strong><%= utilisateur %>.</strong></p>
-                    <p class="happy">Votre compte a été créé avec succès.</p>
-                    <p class="purpose">Voici vos identifiants pour vous connecter:</p>
-                    <p class="purpose">
-                        Email: <strong><%= email %></strong> <br>
-                        Mot de passe: <strong><%= password %></strong> <br>
-                    </p>
-                    <p class="">Cordialement,</p>
+                    <p class="hi">Cher/Chère, <strong><%= candidat %>.</strong></p>
+                    <p class="happy">Nous vous informons que votre demande d'inscription a été <strong>refusée</strong>.</p>
+                    <p class="purpose"><strong>Motif du refus :</strong> <%= motif %>.</p>
+                    <p class="">Pour plus d'informations, veuillez contacter l'administration.</p>
                 </td>
             </tr>
         </tbody>

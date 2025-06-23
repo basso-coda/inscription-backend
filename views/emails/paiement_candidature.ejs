@@ -56,14 +56,10 @@
         <tbody>
             <tr>
                 <td>
-                    <p class="hi">Cher/Chère, <strong><%= utilisateur %>.</strong></p>
-                    <p class="happy">Votre compte a été créé avec succès.</p>
-                    <p class="purpose">Voici vos identifiants pour vous connecter:</p>
-                    <p class="purpose">
-                        Email: <strong><%= email %></strong> <br>
-                        Mot de passe: <strong><%= password %></strong> <br>
-                    </p>
-                    <p class="">Cordialement,</p>
+                    <p class="hi">Cher/Chère, <strong><%= candidat %>.</strong></p>
+                    <p class="happy">Votre demande d’inscription a été acceptée. Veuillez procéder au paiement des frais d'inscription en cliquant sur le lien ci-dessous :</p>
+                    <p class="purpose"><a href="{{ lien_paiement }}">Payer maintenant</a></p>
+                    <p class="">Merci.</p>
                 </td>
             </tr>
         </tbody>
