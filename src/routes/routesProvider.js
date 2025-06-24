@@ -24,6 +24,7 @@ const motifRouter = require('./gestion_motifs/motif_routes');
 const candidatureRouter = require('./gestion_candidature/candidature_routes');
 const dashboardRouter = require('./dashboard/dashboard_routes');
 const profilRoleRouter = require('./administrations/profil_role_routes');
+const paiementRouter = require('./gestion_paiement/paiement_routes');
 
 
 mainRouter.use(authRouter);
@@ -48,6 +49,7 @@ mainRouter.use(exigenceFaculteRouter)
 
 //GESTION DES PAIEMENTS
 mainRouter.use(typePaiementRouter)
+mainRouter.use(paiementRouter)
 
 // GESTION DES DOCUMENTS
 mainRouter.use(typeDocumentRouter)
