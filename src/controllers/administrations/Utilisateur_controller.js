@@ -129,6 +129,8 @@ const getUtilisateurs = async (req, res) => {
             where: { ...globalSearchWhereLike, },
             include: [{ model: Profil, as: 'profil', include: [{ model: Role, as: 'ROLES', through: { attributes: [] } }], }, { model: Sexe, as: 'sexe' }]
         });
+const baseUrl = process.env.BASE_URL
+console.log(baseUrl);
 
         res.json({
             httpStatus: 200,
@@ -198,7 +200,8 @@ const createUtilisateur = async (req, res) => {
         // stocker les fichiers dans la memoire et recuperer le chemin
         for (const name in files) {
             const uploadedFile = await Uploader.save(files[name], 'utilisateurs');
-            files[name] = `${req.protocol}://${req.get("host")}/${uploadedFile?.fileInfo?.fileName}`
+            const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get("host")}`;
+            files[name] = `${baseUrl}/${uploadedFile?.fileInfo?.fileName}`;
         }
         // return console.log('Ivyo ngira mbike', data);
         
@@ -378,7 +381,8 @@ const updateUtilisateur = async (req, res) => {
         // stocker les fichiers dans la memoire et recupèrer le chemin
         for (const name in files) {
             const uploadedFile = await Uploader.save(files[name], 'utilisateurs');
-            files[name] = `${req.protocol}://${req.get("host")}/${uploadedFile?.fileInfo?.fileName}`
+            const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get("host")}`;
+            files[name] = `${baseUrl}/${uploadedFile?.fileInfo?.fileName}`
         }
 
         await Utilisateur.update({ ...data, ...files, }, {
