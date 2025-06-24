@@ -384,7 +384,8 @@ const createCandidature = async (req, res) => {
             if (match) {
                 const index = match[1];
                 const uploadedFile = await Uploader.save(files[name], 'documents');
-                const filePath = `${req.protocol}://${req.get("host")}/${uploadedFile?.fileInfo?.fileName}`;
+                const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get("host")}`;
+                const filePath = `${baseUrl}/${uploadedFile?.fileInfo?.fileName}`;
 
                 if (documents[index]) {
                     documents[index].PATH_DOCUMENT = filePath;

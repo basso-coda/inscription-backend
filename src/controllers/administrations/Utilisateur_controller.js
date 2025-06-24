@@ -129,8 +129,6 @@ const getUtilisateurs = async (req, res) => {
             where: { ...globalSearchWhereLike, },
             include: [{ model: Profil, as: 'profil', include: [{ model: Role, as: 'ROLES', through: { attributes: [] } }], }, { model: Sexe, as: 'sexe' }]
         });
-const baseUrl = process.env.BASE_URL
-console.log(baseUrl);
 
         res.json({
             httpStatus: 200,
