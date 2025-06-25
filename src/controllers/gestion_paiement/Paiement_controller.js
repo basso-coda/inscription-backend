@@ -2,7 +2,6 @@ const Candidature = require('../../db/models/gestion_etudiant/Candidature');
 const TypePaiement = require('../../db/models/gestion_paiement/TypePaiement')
 const Paiement = require('../../db/models/gestion_paiement/Paiement')
 const Etudiant = require('../../db/models/gestion_etudiant/Etudiant')
-const QRCode = require("qrcode");
 const { Op } = require("sequelize");
 
 const enregistrerPaiementCallback = async (req, res) => {
@@ -64,15 +63,10 @@ const enregistrerPaiementCallback = async (req, res) => {
             const numeroIncremental = (totalEtudiantsCetteAnnee + 1).toString().padStart(4, "0");
             const numeroMatricule = `BIU-EED-${promotion}-${numeroIncremental}-${anneeActuelle}`;
 
-            // Récup info candidat pour QR
-            const candidat = await Candidat.findByPk(candidature.CANDIDAT_ID);
-            const qrContent = `Matricule: ${numeroMatricule}\nEmail: ${candidat.EMAIL}`;
-            const qrCodeDataURL = await QRCode.toDataURL(qrContent);
 
             await Etudiant.create({
                 CANDIDAT_ID: candidature.CANDIDAT_ID,
                 NUMERO_MATRICULE: numeroMatricule,
-                QR_CODE: qrCodeDataURL,
                 DATE_INSERTION: new Date()
             });
         }

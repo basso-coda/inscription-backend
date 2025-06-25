@@ -21,11 +21,6 @@ const Etudiant = sequelize.define('etudiant', {
         unique: true,
         allowNull: false,
     },
-    QR_CODE: {
-        type: DataTypes.STRING,
-        unique: true,
-        allowNull: false,
-    },
     DATE_INSERTION: {
         type: 'TIMESTAMP',
         defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
