@@ -114,10 +114,6 @@ const getEtudiants = async (req, res) => {
             }
         }
 
-        if (STATUT_CANDIDATURE) {
-            globalSearchWhereLike[Op.and] = { STATUT_CANDIDATURE }
-        }
-
         const data = await Etudiant.findAndCountAll({
             limit: parseInt(rows),
             offset: parseInt(first),
