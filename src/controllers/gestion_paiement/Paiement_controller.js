@@ -46,7 +46,7 @@ const enregistrerPaiementCallback = async (req, res) => {
         await candidature.save();
 
         // Créer un étudiant uniquement si ce n'est pas encore fait
-        const dejaEtudiant = await Etudiant.findOne({ where: { CANDIDAT_ID: candidature.CANDIDAT_ID } });
+        const dejaEtudiant = await Etudiant.findOne({ where: { CANDIDATURE_ID: candidatureId } });
         if (!dejaEtudiant) {
             const anneeActuelle = new Date().getFullYear();
             const anneeDebutUniversite = 2013;
