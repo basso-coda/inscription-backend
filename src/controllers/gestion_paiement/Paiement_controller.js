@@ -21,7 +21,7 @@ const enregistrerPaiementCallback = async (req, res) => {
         const paiementExistant = await Paiement.findOne({
             where: {
                 CANDIDATURE_ID: candidatureId,
-                TYPE_PAIEMENT: typePaiementId
+                TYPE_PAIEMENT_ID: typePaiementId
             }
         });
 
@@ -35,7 +35,7 @@ const enregistrerPaiementCallback = async (req, res) => {
         await Paiement.create({
             DESCRIPTION: typePaiement.DESCRIPTION,
             MONTANT: typePaiement.MONTANT,
-            TYPE_PAIEMENT: typePaiementId,
+            TYPE_PAIEMENT_ID: typePaiementId,
             CANDIDATURE_ID: candidatureId,
             DATE_PAIEMENT: new Date(),
             DATE_INSERTION: new Date()
@@ -65,7 +65,7 @@ const enregistrerPaiementCallback = async (req, res) => {
 
 
             await Etudiant.create({
-                CANDIDAT_ID: candidature.CANDIDAT_ID,
+                CANDIDATURE_ID: candidatureId,
                 NUMERO_MATRICULE: numeroMatricule,
                 DATE_INSERTION: new Date()
             });
