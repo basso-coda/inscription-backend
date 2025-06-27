@@ -16,7 +16,7 @@ const checkPermission = (role) => async (req, res, next) => {
     const user = await Utilisateur.findOne({
         where: {
             EMAIL: req.user.EMAIL,
-            "$PROFILS.ROLES.ROLE_NOM$": role,
+            "$PROFILS.ROLES.DESCRIPTION$": role,
         },
         attributes: ['USER_ID'],
         include: {
@@ -26,7 +26,7 @@ const checkPermission = (role) => async (req, res, next) => {
             include: {
                 model: Role,
                 as: 'ROLES',
-                attributes: ['ROLE_ID', 'ROLE_NOM']
+                attributes: ['ID_ROLE', 'DESCRIPTION']
             }
         }
     });
