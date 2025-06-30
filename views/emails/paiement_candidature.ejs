@@ -57,9 +57,14 @@
             <tr>
                 <td>
                     <p class="hi">Cher/Chère, <strong><%= candidat %>.</strong></p>
-                    <p class="happy">Votre demande d’inscription a été acceptée. Veuillez procéder au paiement des frais d'inscription en cliquant sur le lien ci-dessous :</p>
-                    <p class="purpose"><a href="{{ lien_paiement }}">Payer maintenant</a></p>
-                    <p class="">Merci.</p>
+                    <p class="happy">Votre demande d’inscription a été approuvée. Pour finaliser votre inscription, veuillez procéder au paiement des frais d'inscription en cliquant sur le lien ci-dessous :</p>
+                    <!-- <p class=""><a href="{{lien_paiement}}" style="padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none;">Payer maintenant</a></p>
+                    <p>Merci,<br>L'administration</p> -->
+                    <a href="{{lien_paiement}}" target="_blank" style="padding: 10px 15px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px;">
+                        Payer maintenant
+                    </a>
+
+                    <p style="margin-top:20px;">Merci,<br>L'administration BIU</p>
                 </td>
             </tr>
         </tbody>

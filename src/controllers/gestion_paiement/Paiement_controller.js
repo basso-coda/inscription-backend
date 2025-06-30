@@ -3,6 +3,7 @@ const TypePaiement = require('../../db/models/gestion_paiement/TypePaiement')
 const Paiement = require('../../db/models/gestion_paiement/Paiement')
 const Etudiant = require('../../db/models/gestion_etudiant/Etudiant')
 const { Op } = require("sequelize");
+const emailSender = require('../../utils/emailSender');
 
 const enregistrerPaiementCallback = async (req, res) => {
     try {
@@ -70,6 +71,18 @@ const enregistrerPaiementCallback = async (req, res) => {
                 DATE_INSERTION: new Date()
             });
         }
+
+        // Email
+        await emailSender(
+            { to: candidature.EMAIL_PRIVE, subject: "Confirmation de votre paiement" },
+            "paiement_success",
+            {
+                candidat: `${candidature.NOM} ${candidature.PRENOM}`,
+                montant: typePaiement.MONTANT,
+                description: typePaiement.DESCRIPTION,
+                matricule: dejaEtudiant ? dejaEtudiant.NUMERO_MATRICULE : numeroMatricule
+            }
+        );
 
         res.status(200).json({ message: "Paiement traité avec succès." });
 

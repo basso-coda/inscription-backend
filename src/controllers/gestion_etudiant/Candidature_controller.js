@@ -657,7 +657,7 @@ const approuverCandidature = async (req, res) => {
             "paiement_candidature",
             {
                 candidat: `${candidature.NOM} ${candidature.PRENOM}`,
-                lien_paiement: `https://votresite.com/paiement/${candidature.ID_CANDIDATURE}`
+                lien_paiement: `http://localhost:8080/afripay-button-payment/${candidature.ID_CANDIDATURE}`
             }
         );
 

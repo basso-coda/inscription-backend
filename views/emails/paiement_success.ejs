@@ -1,0 +1,141 @@
+<!-- <style>
+    .container {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+        font-size: 16px;
+        font-weight: 300;
+        color: #262b33;
+        margin: auto;
+    }
+
+    table {
+        margin: 32px auto 48px;
+    }
+
+    h1 {
+        font-size: 24px;
+        font-weight: bold;
+        line-height: 30px;
+        margin-top: 0;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    img {
+        width: 100%;
+        border: none;
+        border-radius: 4px;
+    }
+
+    p {
+        font-weight: 400;
+    }
+
+    .btn-warp {
+        text-align: center;
+    }
+
+    .btn {
+        text-align: center;
+    }
+
+    .btn a {
+        background-color: #2196f3;
+        border-radius: 4px;
+        color: #ffffff;
+        display: inline-block;
+        font-family: sans-serif;
+        font-size: 15px;
+        font-weight: bold;
+        text-align: center;
+        text-decoration: none;
+        padding: 12px 24px;
+    }
+</style> -->
+<!-- <div class="container">
+    <table width="580">
+        <tbody>
+            <tr>
+                <td>
+                    <p class="hi">Cher/Chère, <strong><%= candidat %>.</strong></p>
+                    <p class="happy">Votre paiement des frais d'inscription a été effectué avec succès.</p>
+                    <p class="purpose">La réponse vous sera communiqué dans les délais respectifs.</p>
+                    <p class="">Cordialement,</p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div> -->
+
+
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmation de votre paiement</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f6f9fc;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.07);
+        }
+        .header {
+            background-color: #005baa;
+            color: #ffffff;
+            padding: 10px;
+            text-align: center;
+            border-radius: 6px 6px 0 0;
+        }
+        .content {
+            margin-top: 20px;
+        }
+        .footer {
+            font-size: 12px;
+            margin-top: 30px;
+            color: #777;
+            text-align: center;
+        }
+        .highlight {
+            color: #005baa;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>Bujumbura International University</h2>
+    </div>
+    <div class="content">
+        <p>Bonjour <strong><%= candidat %></strong>,</p>
+
+        <p>Nous vous confirmons la réception de votre paiement concernant votre demande d'inscription.</p>
+
+        <p><strong>Détails du paiement :</strong></p>
+        <ul>
+            <li><strong>Montant :</strong> <span class="highlight"><%= montant %> Fbu</span></li>
+            <li><strong>Description :</strong> <%= description %></li>
+            <li><strong>Votre Numéro de matricule :</strong> <%= matricule %></li>
+        </ul>
+
+        <p>Votre candidature est maintenant <span class="highlight">validée</span>. Bienvenue à Bujumbura International Unic=versity (BIU)!</p>
+
+        <p>Merci de faire confiance à BIU.<br>L'équipe administrative.</p>
+    </div>
+
+    <div class="footer">
+        © <%= new Date().getFullYear() %> Bujumbura International University - www.biu.bi
+    </div>
+</div>
+</body>
+</html>
+

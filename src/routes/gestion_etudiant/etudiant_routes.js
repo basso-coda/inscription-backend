@@ -5,5 +5,6 @@ const verifToken = require('../../middlewares/verifyToken');
 etudiantRouter.use(verifToken);
 
 etudiantRouter.get('/etudiants', EtudiantController.getEtudiants);
+etudiantRouter.get('/etudiants/:ID_ETUDIANT', EtudiantController.getEtudiant)
 
 module.exports = etudiantRouter

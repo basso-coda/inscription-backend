@@ -130,7 +130,6 @@ const getEtudiants = async (req, res) => {
                     { model: Document, as: 'documents', include: [{ model: TypeDocument, as: 'type_document' }] },
                     { model: PersonneContact, as: 'personnes_contact' }
                 ] }
-                
             ]
         });
 
@@ -151,8 +150,57 @@ const getEtudiants = async (req, res) => {
     }
 }
 
+/**
+ * Trouver une seule etudiant
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ */
+const getEtudiant = async (req, res) => {
+    try {
+        const { ID_ETUDIANT } = req.params
+        const etudiant = await Etudiant.findByPk(ID_ETUDIANT, {
+            include: [
+                { model: Candidature, as: 'candidature', include: [
+                    { model: Utilisateur, as: 'candidat' }, 
+                    { model: Classe, as: 'classe', include: [{ model: Departement, as: 'departement', include: [{ model: Faculte, as: 'faculte' }] }] },
+                    { model: Sexe, as: 'sexe' },
+                    { model: Nationalite, as: 'nationalite' },
+                    { model: EtatCivil, as: 'etat_civil' },
+                    { model: Utilisateur, as: 'secretaire' },
+                    { model: Document, as: 'documents', include: [{ model: TypeDocument, as: 'type_document' }] },
+                    { model: PersonneContact, as: 'personnes_contact' }
+                ] }
+                
+            ]
+        });
+
+        if (!etudiant) {
+            return res.status(404).json({
+                httpStatus: 404,
+                message: 'Etudiant non trouvé',
+                data: etudiant
+            });
+        }
+
+        res.json({
+            httpStatus: 200,
+            message: 'Etudiant trouvé avec succès',
+            data: etudiant
+        });
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            message: 'Erreur interne du serveur',
+            httpStatus: 500,
+            data: null
+        })
+    }
+}
+
 
 
 module.exports = {
-    getEtudiants
+    getEtudiants,
+    getEtudiant
 };
