@@ -4,6 +4,15 @@ const Paiement = require('../../db/models/gestion_paiement/Paiement')
 const Etudiant = require('../../db/models/gestion_etudiant/Etudiant')
 const { Op } = require("sequelize");
 const emailSender = require('../../utils/emailSender');
+const Utilisateur = require('../../db/models/administrations/Utilisateur');
+const Classe = require('../../db/models/gestion_facultes/Classe');
+const Departement = require('../../db/models/gestion_facultes/Departement');
+const Faculte = require('../../db/models/gestion_facultes/Faculte');
+const Sexe = require('../../db/models/sexe/Sexe_model');
+const Nationalite = require('../../db/models/nationalite/Nationalite');
+const EtatCivil = require('../../db/models/etat_civil/Etat_civil_model');
+const TypeDocument = require('../../db/models/gestion_document/TypeDocument');
+const PersonneContact = require('../../db/models/gestion_etudiant/PersonneContact');
 
 const enregistrerPaiementCallback = async (req, res) => {
     try {
@@ -91,5 +100,6 @@ const enregistrerPaiementCallback = async (req, res) => {
         res.status(500).json({ message: "Erreur interne lors du traitement du paiement." });
     }
 };
+
 
 module.exports = { enregistrerPaiementCallback };

@@ -20,6 +20,8 @@ const Faculte = require('../../db/models/gestion_facultes/Faculte');
 const MotifRejet = require('../../db/models/gestion_motif/MotifRejet');
 const Motif = require('../../db/models/gestion_motif/Motif');
 const PersonneContact = require('../../db/models/gestion_etudiant/PersonneContact');
+const Paiement = require('../../db/models/gestion_paiement/Paiement');
+const TypePaiement = require('../../db/models/gestion_paiement/TypePaiement');
 
 
 yup.setLocale({
@@ -203,123 +205,6 @@ const getCandidatures = async (req, res) => {
  * @param {Express.Request} req
  * @param {Express.Response} res
  */
-// const createCandidature = async (req, res) => {
-//     let files = {};
-
-//     // copier tous les fichiers uploadés
-//     for (const name in req.files) {
-//         files[name] = req.files[name]
-//     }
-
-//     // Géstion d'erreur de toute la méthode
-//     const candidatureSchema = yup.lazy(() => yup.object({
-//         CANDIDAT_ID: yup.integer().required(),
-//         ANNEE_ACADEMIQUE: yup.string().required(),
-//         CLASSE_ID: yup.integer().required(),
-//         NOM: yup.string().required(),
-//         PRENOM: yup.string().required(),
-//         DATE_NAISSANCE: yup.date().required(),
-//         NATIONALITE_ID: yup.integer().required(),
-//         NUM_CARTE_IDENTITE: yup.string().required(),
-//         COMMUNE_DELIVRANCE: yup.integer().required(),
-//         DATE_DELIVRANCE: yup.date().required(),
-//         EMAIL_PRIVE: yup.string().email().required(),
-//         NUMERO_TELEPHONE_PRIVE: yup.string().required(),
-//         ADRESSE_RESIDENCE: yup.string().required(),
-//         NOM_DERNIERE_ECOLE_FREQUENTEE: yup.string().required(),
-//         NOTE_DERNIERE_ECOLE_SECONDAIRE_FREQUENTEE: yup.number().required(),
-//         NOTE_EXAMEN_D_ETAT: yup.number().required(),
-//         STATUT_CANDIDATURE: yup.string().required(),
-
-//         SECRETAIRE_ID: yup.integer().required(),
-//         SEXE_ID: yup.number().required(),
-//         ETAT_CIVIL_ID: yup.number().required(),
-
-//         IMAGE: yup.mixed().test("fileSize", "Le fichier est volumineux", (value) => {
-//             if (!value?.size) return true // attachment is optional
-//             return value.size <= 200_000
-//         }),
-
-//     }));
-
-//     // Géstion d'erreur de validation des données
-
-//     let data = await candidatureSchema.validate(
-//         { ...req.body, ...files },
-//         { abortEarly: false, stripUnknown: true }
-//     );
-
-//     // Géstion d'erreur d'insertion des données
-//     try {
-
-//         // stocker les fichiers dans la memoire et recuperer le chemin
-//         for (const name in files) {
-//             const uploadedFile = await Uploader.save(files[name], 'utilisateurs');
-//             files[name] = `${req.protocol}://${req.get("host")}/${uploadedFile?.fileInfo?.fileName}`
-//         }
-//         // return console.log('Ivyo ngira mbike', data);
-        
-//         const newData = await Candidature.create({
-//             ...data,
-//             ...files
-//         });
-
-//         // delete newData.dataValues.MOT_DE_PASSE
-
-//         // envoie l'email
-//         await emailSender(
-//             { to: data.EMAIL, subject: "Création d'un compte", },
-//             'creation_compte',
-//             {
-//                 utilisateur: `${data.NOM} ${data.PRENOM}`,
-//                 email: data.EMAIL,
-//                 password: randomPassword,
-//                 lien: `${req.protocol}://${req.get("host")}`
-//             }
-//         );
-
-//         res.status(201).json({
-//             httpStatus: 201,
-//             message: 'Utilisateur crée avec succès',
-//             data: newData.dataValues
-//         });
-
-//     } catch (error) {
-//         if (error instanceof yup.ValidationError) {
-//             return res.status(422).json({
-//                 httpStatus: 422,
-//                 message: 'Erreur de validation des données',
-//                 data: null,
-//                 errors: error.inner.reduce((acc, curr) => {
-//                     if (curr.path) {
-//                         return { ...acc, [curr.path]: curr.errors[0] }
-//                     }
-//                 }, {}),
-//             })
-//         }
-
-//         console.log(error)
-
-//         if (error instanceof ValidationError) {
-//             return res.status(422).json({
-//                 message: 'Erreur de validation des données',
-//                 httpStatus: 422,
-//                 data: null,
-//                 errors: error?.errors.reduce((acc, curr) => {
-//                     if (curr.path) {
-//                         return { ...acc, [curr.path]: curr.message }
-//                     }
-//                 }, {})
-//             });
-//         }
-
-//         res.status(500).json({
-//             message: 'Erreur interne du serveur',
-//             httpStatus: 500,
-//             data: null
-//         })
-//     }
-// }
 
 const createCandidature = async (req, res) => {
     const transaction = await sequelize.transaction();
@@ -696,6 +581,146 @@ const mettreEnTraitementCandidature = async (req, res) => {
     }
 }
 
+/**
+ * Recupérer la liste des paiements
+ * @param {Express.Request} req
+ * @param {Express.Response} res
+ * @returns
+ */
+const getPaiements = async (req, res) => {
+    try {
+        const { rows = 10, first = 0, sortField, sortOrder, search } = req.query
+
+        const defaultSortDirection = "DESC"
+
+        const sortColumns = {
+            paiements: {
+                as: "paiement",
+                fields: {
+                    ID_PAIEMENT: "ID_PAIEMENT",
+                    DESCRIPTION: "DESCRIPTION",
+                    MONTANT: "MONTANT",
+                    TYPE_PAIEMENT_ID: "TYPE_PAIEMENT_ID",
+                    DATE_PAIEMENT: "DATE_PAIEMENT",
+                    CANDIDATURE_ID: "CANDIDATURE_ID",
+                    DATE_INSERTION: "DATE_INSERTION",
+                }
+            },
+        }
+
+        let orderColumn, orderDirection
+        // sorting
+        let sortModel
+
+        if (sortField) {
+            for (let key in sortColumns) {
+                if (sortColumns[key].fields.hasOwnProperty(sortField)) {
+                    sortModel = {
+                        model: key,
+                        as: sortColumns[key].as
+                    }
+
+                    orderColumn = sortColumns[key].fields[sortField]
+
+                    break
+                }
+            }
+        }
+
+        if (!orderColumn || !sortModel) {
+            orderColumn = sortColumns.paiements.fields.ID_PAIEMENT
+
+            sortModel = {
+                model: 'paiement',
+                as: sortColumns.paiements.as
+            }
+
+        }
+
+        // ordering
+        if (sortOrder == 1) {
+            orderDirection = 'ASC'
+        } else if (sortOrder == -1) {
+            orderDirection = 'DESC'
+        } else {
+            orderDirection = defaultSortDirection
+        }
+
+        // searching
+        const globalSearchColumns = [
+            "ID_PAIEMENT",
+            "DESCRIPTION",
+            "MONTANT",
+            "TYPE_PAIEMENT_ID",
+            "DATE_PAIEMENT",
+            "CANDIDATURE_ID",
+            "DATE_INSERTION",
+            "$type_paiement.DESCRIPTION$",
+            "$candidature.NOM$",
+            "$candidature.PRENOM$",
+            "$candidature.classe.DESCRIPTION$",
+            "$candidature.classe.departement.DESCRIPTION$",
+            "$candidature.classe.departement.faculte.DESCRIPTION$",
+            "$candidature.nationalite.NOM_NATIONALITE$",
+            "$candidature.etat_civil.DESCRIPTION",
+            "$candidature.secretaire.NOM$",
+            "$candidature.secretaire.PRENOM$",
+            "$candidature.sexe.SEXE_DESCRIPTION$"
+        ]
+
+        let globalSearchWhereLike = {}
+
+        if (search && search.trim() != "") {
+            const searchWildCard = {}
+
+            globalSearchColumns.forEach(column => {
+                searchWildCard[column] = {
+                    [Op.substring]: search
+                }
+            })
+
+            globalSearchWhereLike = {
+                [Op.or]: searchWildCard
+            }
+        }
+
+        const data = await Paiement.findAndCountAll({
+            limit: parseInt(rows),
+            offset: parseInt(first),
+            order: [[orderColumn, orderDirection]],
+            where: { ...globalSearchWhereLike, },
+            include: [
+                { model: TypePaiement, as: 'type_paiement' }, 
+                { model: Candidature, as: 'candidature', include: [
+                    { model: Utilisateur, as: 'candidat' }, 
+                    { model: Classe, as: 'classe', include: [{ model: Departement, as: 'departement', include: [{ model: Faculte, as: 'faculte' }] }] },
+                    { model: Sexe, as: 'sexe' },
+                    { model: Nationalite, as: 'nationalite' },
+                    { model: EtatCivil, as: 'etat_civil' },
+                    { model: Utilisateur, as: 'secretaire' },
+                    { model: Document, as: 'documents', include: [{ model: TypeDocument, as: 'type_document' }] },
+                    { model: PersonneContact, as: 'personnes_contact' }
+                ] }
+            ]
+        });
+
+        res.json({
+            httpStatus: 200,
+            message: 'Paiements recupérés avec succès',
+            data
+        });
+    } catch (error) {
+        console.error(error);
+
+        res.json({
+            // message: 'Erreur interne du serveur',
+            message: error.message,
+            httpStatus: 500,
+            data: null
+        })
+    }
+}
+
 
 module.exports = {
     getCandidatures,
@@ -704,5 +729,6 @@ module.exports = {
     getCandidatureParUtilisateur,
     refuserCandidature,
     approuverCandidature,
-    mettreEnTraitementCandidature
+    mettreEnTraitementCandidature,
+    getPaiements
 };
