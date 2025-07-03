@@ -65,12 +65,12 @@ const createClasse = async (req, res) => {
     //Gestion d'erreur de toute la modele
     try {
 
-        const existingClasse = await Classe.findOne({ where: {DESCRIPTION: req.body.DESCRIPTION} })
+        const existingClasse = await Classe.findOne({ where: {DESCRIPTION: req.body.DESCRIPTION, DEPARTEMENT_ID: req.body.DEPARTEMENT_ID} })
 
         if (existingClasse) {
             return res.status(422).json({
-                message: "La classe existe deja",
-                data: { DESCRIPTION: "La classe existe deja dans la BDD" }
+                message: "La classe existe déjà dans ce département",
+                data: { DESCRIPTION: "La classe existe deja dans ce département" }
             })
         }
 
@@ -154,10 +154,10 @@ const updateClasse = async (req, res) => {
 
         // Verifier si la classe existe deja dans la BDD
         if (req.body.DESCRIPTION !== existingClasse.DESCRIPTION) {
-            const classeAlreadyExist = await Classe.findOne({where: {DESCRIPTION: req.body.DESCRIPTION}})
+            const classeAlreadyExist = await Classe.findOne({where: {DESCRIPTION: req.body.DESCRIPTION, DEPARTEMENT_ID:req.body.DEPARTEMENT_ID}})
             if (classeAlreadyExist) {
                 return res.status(402).json({
-                    message: "La classe existe deja dans la BDD"
+                    message: "La classe existe deja dans ce département"
                 })
             }
         }
