@@ -22,7 +22,7 @@ const getExigenceFacultes = async (req, res) => {
             exigence_facultes: {
             as: "exigence_faculte",
             fields: {
-                ID_EXIGENCE_FACULTE: "exigence_faculte.ID_EXIGENCE_FACULTE",
+                ID_EXIGENCE_FACULTE: "ID_EXIGENCE_FACULTE",
                 EXIGENCE_ID: "EXIGENCE_ID",
                 FACULTE_ID: "FACULTE_ID"
             }

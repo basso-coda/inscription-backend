@@ -11,7 +11,6 @@ candidatureRouter.get('/mes-demandes/:utilisateurId', CandidatureController.getC
 candidatureRouter.post('/refuser-demande/:id', CandidatureController.refuserCandidature);
 candidatureRouter.post('/approuver-demande/:id', CandidatureController.approuverCandidature);
 candidatureRouter.put('/change-statut/:id', CandidatureController.mettreEnTraitementCandidature)
-// candidatureRouter.post('/type_documents/delete', CandidatureController.deleteTypeDocument);
 candidatureRouter.get('/paiements', CandidatureController.getPaiements)
 
 module.exports = candidatureRouter
