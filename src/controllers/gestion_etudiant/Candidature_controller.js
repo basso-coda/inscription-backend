@@ -56,7 +56,6 @@ const getCandidatures = async (req, res) => {
                     DATE_NAISSANCE: "DATE_NAISSANCE",
                     NATIONALITE_ID: "NATIONALITE_ID",
                     NUM_CARTE_IDENTITE: "NUM_CARTE_IDENTITE",
-                    COMMUNE_DELIVRANCE: "COMMUNE_DELIVRANCE",
                     DATE_DELIVRANCE: "DATE_DELIVRANCE",
                     SEXE_ID: "SEXE_ID",
                     ETAT_CIVIL_ID: "ETAT_CIVIL_ID",
@@ -122,7 +121,6 @@ const getCandidatures = async (req, res) => {
             "DATE_NAISSANCE",
             "NATIONALITE_ID",
             "NUM_CARTE_IDENTITE",
-            "COMMUNE_DELIVRANCE",
             "DATE_DELIVRANCE",
             "SEXE_ID",
             "ETAT_CIVIL_ID",
@@ -220,7 +218,6 @@ const createCandidature = async (req, res) => {
                 DATE_NAISSANCE: yup.date().required(),
                 NATIONALITE_ID: yup.number().required(),
                 NUM_CARTE_IDENTITE: yup.string().required(),
-                COMMUNE_DELIVRANCE: yup.string().required(),
                 DATE_DELIVRANCE: yup.date().required(),
                 EMAIL_PRIVE: yup.string().email().required(),
                 NUMERO_TELEPHONE_PRIVE: yup.string().required(),
@@ -252,7 +249,7 @@ const createCandidature = async (req, res) => {
             });
         }
 
-        // 🔍 Extraire les documents du body
+        // Extraire les documents du body
         const documents = [];
         Object.keys(req.body).forEach((key) => {
             const match = key.match(/^documents\[(\d+)]\[(\w+)]$/);
@@ -263,7 +260,7 @@ const createCandidature = async (req, res) => {
             }
         });
 
-        // 📎 Associer chaque fichier uploadé à son document
+        // Associer chaque fichier uploadé à son document
         for (const name in files) {
             const match = name.match(/^documents\[(\d+)]\[IMAGE\]$/);
             if (match) {
@@ -278,7 +275,7 @@ const createCandidature = async (req, res) => {
             }
         }
 
-        // ✅ Vérifier si on a au moins 50% des documents requis
+        // Vérifier si on a au moins 50% des documents requis
         const totalRequiredDocs = await TypeDocument.count();
         const validDocs = documents.filter(doc => doc.TYPE_DOCUMENT_ID && doc.PATH_DOCUMENT);
         if (validDocs.length < Math.ceil(totalRequiredDocs * 0.5)) {

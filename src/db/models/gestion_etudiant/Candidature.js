@@ -60,11 +60,6 @@ const Candidature = sequelize.define('candidature', {
         allowNull: true,
     },
 
-    COMMUNE_DELIVRANCE: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-
     DATE_DELIVRANCE: {
         type: DataTypes.DATE,
         allowNull: false
@@ -132,7 +127,6 @@ const Candidature = sequelize.define('candidature', {
     DATE_NAISSANCE: DataTypes.DATE,
     NATIONALITE_ID: DataTypes.INTEGER,
     NUM_CARTE_IDENTITE: DataTypes.STRING,
-    COMMUNE_DELIVRANCE: DataTypes.STRING,
     DATE_DELIVRANCE: DataTypes.DATE,
     SEXE_ID: DataTypes.TINYINT,
     ETAT_CIVIL_ID: DataTypes.TINYINT,
