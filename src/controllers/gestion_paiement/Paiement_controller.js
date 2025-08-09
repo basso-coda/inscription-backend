@@ -1,18 +1,12 @@
+import PDFDocument from "pdfkit";
+import getStream from "get-stream";
 const Candidature = require('../../db/models/gestion_etudiant/Candidature');
 const TypePaiement = require('../../db/models/gestion_paiement/TypePaiement')
 const Paiement = require('../../db/models/gestion_paiement/Paiement')
 const Etudiant = require('../../db/models/gestion_etudiant/Etudiant')
 const { Op } = require("sequelize");
 const emailSender = require('../../utils/emailSender');
-const Utilisateur = require('../../db/models/administrations/Utilisateur');
-const Classe = require('../../db/models/gestion_facultes/Classe');
-const Departement = require('../../db/models/gestion_facultes/Departement');
-const Faculte = require('../../db/models/gestion_facultes/Faculte');
-const Sexe = require('../../db/models/sexe/Sexe_model');
-const Nationalite = require('../../db/models/nationalite/Nationalite');
-const EtatCivil = require('../../db/models/etat_civil/Etat_civil_model');
-const TypeDocument = require('../../db/models/gestion_document/TypeDocument');
-const PersonneContact = require('../../db/models/gestion_etudiant/PersonneContact');
+
 
 const enregistrerPaiementCallback = async (req, res) => {
     try {
@@ -81,9 +75,85 @@ const enregistrerPaiementCallback = async (req, res) => {
             });
         }
 
+        // PDF invoice generator
+        async function generateInvoiceBuffer (candidature, typePaiement, numeroMatricule) {
+            const doc = new PDFDocument({ margin: 50 });
+
+            // Couleur principale
+            const primaryColor = "#005baa";
+
+            // Référence facture unique
+            const referenceFacture = `FACT-${new Date().getFullYear()}-${Math.floor(Math.random() * 9000 + 1000)}`;
+
+            // ===== Titre principal =====
+            doc.fontSize(20)
+            .fillColor(primaryColor)
+            .text("Bujumbura International University", { align: "center" })
+            .moveDown(0.5);
+
+            doc.fontSize(14)
+            .fillColor("black")
+            .text("FACTURE DE PAIEMENT", { align: "center", underline: true })
+            .moveDown(1.5);
+
+            // Référence + date
+            doc.fontSize(12).fillColor("black")
+            .text(`Référence facture : ${referenceFacture}`)
+            .text(`Date d’émission : ${new Date().toLocaleDateString("fr-FR")}`)
+            .moveDown(1);
+
+            // ===== Encadré infos étudiant =====
+            doc.rect(50, doc.y, 500, 80).strokeColor(primaryColor).stroke();
+            doc.fontSize(12).fillColor("black");
+            doc.text(`Nom complet : ${candidature.NOM} ${candidature.PRENOM}`, 60, doc.y + 5);
+            doc.text(`Numéro matricule : ${numeroMatricule}`, 60);
+            doc.text(`Email : ${candidature.EMAIL_PRIVE}`, 60);
+
+            doc.moveDown(2);
+
+            // ===== Encadré détails paiement =====
+            doc.fontSize(14).fillColor(primaryColor).text("Détails du paiement", { underline: true });
+            doc.rect(50, doc.y, 500, 80).strokeColor(primaryColor).stroke();
+            doc.fontSize(12).fillColor("black");
+            doc.text(`Description : ${typePaiement.DESCRIPTION}`, 60, doc.y + 5);
+            doc.text(`Montant payé : ${typePaiement.MONTANT} Fbu`, 60);
+            doc.text(`Date de paiement : ${new Date().toLocaleDateString("fr-FR")}`, 60);
+
+            doc.moveDown(2);
+
+            // ===== Message final =====
+            doc.fontSize(12).fillColor("black").text(
+                "Nous vous remercions pour votre paiement. Cette facture confirme la validation de votre inscription à BIU. Veuillez conserver ce document comme preuve officielle.",
+                { align: "justify" }
+            );
+
+            doc.moveDown(3);
+
+            // ===== Pied de page =====
+            doc.moveTo(50, 750).lineTo(550, 750).strokeColor(primaryColor).stroke();
+            doc.fontSize(10).fillColor("#666").text(
+                "Bujumbura International University - www.biu.bi\n© " + new Date().getFullYear(),
+                50, 760, { align: "center" }
+            );
+
+            doc.end();
+            return await getStream.buffer(doc);
+        }
+
+        const pdfBuffer = await generateInvoiceBuffer(candidature, typePaiement, dejaEtudiant ? dejaEtudiant.NUMERO_MATRICULE : numeroMatricule);
+
         // Email
         await emailSender(
-            { to: candidature.EMAIL_PRIVE, subject: "Confirmation de votre paiement" },
+            { 
+                to: candidature.EMAIL_PRIVE, 
+                subject: "Confirmation de votre paiement",
+                attachments: [
+                    {
+                        filename: `Facture_${dejaEtudiant ? dejaEtudiant.NUMERO_MATRICULE : numeroMatricule}.pdf`,
+                        content: pdfBuffer
+                    }
+                ] 
+            },
             "paiement_success",
             {
                 candidat: `${candidature.NOM} ${candidature.PRENOM}`,
