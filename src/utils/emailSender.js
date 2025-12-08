@@ -6,24 +6,6 @@ const juice = require('juice')
 
 require("dotenv").config();
 
-transporter.verify();
-
-const transporter = nodemailer.createTransport(
-    process.env.NODE_ENV === 'local' 
-        ? devTransport 
-        : prodTransport
-);
-
-// AJOUTE CE TEST :
-transporter.verify((err, success) => {
-    if (err) {
-        console.log("❌ Problème de connexion SMTP :", err);
-    } else {
-        console.log("✅ Connexion SMTP OK !");
-    }
-});
-
-
 const devTransport = {
     host: 'localhost',
     port: 1025,
@@ -48,6 +30,17 @@ const emailSender = async (mailOptions, templateName, data) => {
     try {
         const transporter = nodemailer.createTransport(process.env.NODE_ENV === 'local' ? devTransport : prodTransport)
 
+        // TEST SMTP ICI !
+        transporter.verify((err, success) => {
+            console.log("=== TEST SMTP ===");
+            if (err) {
+                console.log("❌ Problème de connexion SMTP :", err);
+            } else {
+                console.log("✅ Connexion SMTP OK !");
+            }
+            console.log("=================");
+        });
+        
         const templatePath = `views/emails/${templateName}.ejs`
 
         console.log(templateName, fs.existsSync(templatePath))
