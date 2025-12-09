@@ -133,7 +133,7 @@ const loginCandidat = async (req, res) => {
             MOT_DE_PASSE: yup.string().required()
         });
 
-        await loginSchema.validate(req.body, { abortEarly: false, stripUnknown: true });
+        await loginSchema.validate({ EMAIL, MOT_DE_PASSE }, { abortEarly: false });
 
         const utilisateur = await Utilisateur.findOne({
             include: { model: Profil, as: 'profil', include: [{ model: Role, as: 'ROLES', through: { attributes: [] } }], },
