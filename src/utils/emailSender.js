@@ -14,7 +14,7 @@ const devTransport = {
 
 const prodTransport = {
     host: process.env.MAIL_HOST,
-    port: parseInt(process.env.MAIL_PORT),
+    port: 587,
     secure: false,
     auth: {
         user: process.env.MAIL_USERNAME,
