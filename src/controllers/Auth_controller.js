@@ -22,8 +22,6 @@ const login = async (req, res) => {
 
         const { EMAIL, MOT_DE_PASSE } = req.body;
 
-        console.log('ama données arungitswe', req.body)
-
         const loginSchema = yup.object({
             EMAIL: yup.string().email().required(),
             MOT_DE_PASSE: yup.string().required()
@@ -126,6 +124,9 @@ const loginCandidat = async (req, res) => {
     try {
 
         const { EMAIL, MOT_DE_PASSE } = req.body;
+
+        console.log('ama données arungitswe', req.body);
+        
 
         const loginSchema = yup.object({
             EMAIL: yup.string().email().required(),
