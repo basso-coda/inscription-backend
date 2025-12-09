@@ -14,16 +14,16 @@ const devTransport = {
 
 const prodTransport = {
     host: process.env.MAIL_HOST,
-    port: 465,
-    secure: true,
+    port: parseInt(process.env.MAIL_PORT),
+    secure: false,
     auth: {
         user: process.env.MAIL_USERNAME,
         pass: process.env.MAIL_PASSWORD,
     },
-    ignoreTLS: true,
-    tls: {
-        rejectUnauthorized: false
-    }
+    // ignoreTLS: true,
+    // tls: {
+    //     rejectUnauthorized: false
+    // }
 }
 
 const emailSender = async (mailOptions, templateName, data) => {
@@ -40,7 +40,7 @@ const emailSender = async (mailOptions, templateName, data) => {
             }
             console.log("=================");
         });
-        
+
         const templatePath = `views/emails/${templateName}.ejs`
 
         console.log(templateName, fs.existsSync(templatePath))
