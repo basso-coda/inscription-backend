@@ -22,6 +22,8 @@ const login = async (req, res) => {
 
         const { EMAIL, MOT_DE_PASSE } = req.body;
 
+        console.log(req.body)
+
         const loginSchema = yup.object({
             EMAIL: yup.string().email().required(),
             MOT_DE_PASSE: yup.string().required()
