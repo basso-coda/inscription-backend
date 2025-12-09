@@ -1,5 +1,5 @@
-import PDFDocument from "pdfkit";
-import getStream from "get-stream";
+const PDFDocument = require("pdfkit") ;
+const getStream = require("get-stream");
 const Candidature = require('../../db/models/gestion_etudiant/Candidature');
 const TypePaiement = require('../../db/models/gestion_paiement/TypePaiement')
 const Paiement = require('../../db/models/gestion_paiement/Paiement')
